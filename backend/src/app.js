@@ -3,7 +3,7 @@ import cors from 'cors';
 import 'dotenv/config';
 
 // Import des routes
-import authRoutes from './middleware/auth.js';
+import authRoutes from './routes/auth.js';
 import postRoutes from './routes/posts.js';
 import authMiddleware from './middleware/auth.js';
 
@@ -19,21 +19,8 @@ app.use('/api/auth', authRoutes);
 // Routes protégées (nécessitent un token JWT valide)
 app.use('/api/posts', authMiddleware, postRoutes);
 
-// Gestion des routes non trouvées
-app.use((req, res) => {
-  res.status(404).json({ error: 'Route non trouvée' });
-});
-
-// Gestion globale des erreurs
-app.use((err, req, res, next) => {
-  console.error('Erreur non gérée:', err);
-  res.status(500).json({ error: 'Une erreur interne est survenue' });
-});
-
-
-// Routes simples pour commencer
-app.get('/api/health', function(req, res){
-  res.json({ status: 'OK', message: 'Backend running' });
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'OK', timestamp: new Date() });
 });
 
 app.post('/api/test', function(req, res){
@@ -48,5 +35,23 @@ app.listen(PORT, function(){
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
+
+// Gestion des routes non trouvées
+app.use((req, res) => {
+  res.status(404).json({ error: 'Route non trouvée' });
+});
+
+// Gestion globale des erreurs
+app.use((err, req, res, next) => {
+  console.error('Erreur non gérée:', err);
+  res.status(500).json({ error: 'Une erreur interne est survenue' });
+});
+
+
+
+
+
+
+
 
 
