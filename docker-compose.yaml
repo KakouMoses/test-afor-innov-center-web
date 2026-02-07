@@ -1,0 +1,100 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  # 1. Base de données PostgreSQL
+  postgres:
+    image: postgres:18
+    container_name: my-postgres-container
+    environment:
+      POSTGRES_DB: afordb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d afordb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+
+  # 2. Backend Node.js avec Prisma
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: aforapp-backend
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/afordb?schema=public"
+      JWT_SECRET: "votre_clé_secrète_très_sécurisée_changez_cela_en_production"
+      # Pour développement, ajoutez aussi:
+      # - PORT=3000
+      # - JWT_EXPIRES_IN=7d
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+      - /app/src/generated # Évite l'écrasement du client Prisma généré
+    networks:
+      - app-network
+    # Pour développement avec nodemon:
+    # command: npm run dev
+
+  # 3. Frontend React/Vite
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      # Pour développement, utilisez Dockerfile.dev à la place
+    container_name: aforapp-frontend
+    ports:
+      - "5173:80" # Production (nginx)
+      # - "5173:5173" # Développement (Vite)
+    environment:
+      VITE_API_URL: "http://localhost:3000"
+      # Variables spécifiques à votre app:
+      # - VITE_APP_NAME=Writing on the Wall
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/dist # Pour développement seulement
+    networks:
+      - app-network
+
+  # 4. (Optionnel) Prisma Studio pour gérer la BDD via interface web
+  prisma-studio:
+    image: node:20-alpine
+    container_name: wallapp-prisma-studio
+    working_dir: /app
+    command: npx prisma studio --port 5555 --host 0.0.0.0
+    ports:
+      - "5555:5555"
+    environment:
+      DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/afordb?schema=public"
+    volumes:
+      - ./backend/prisma:/app/prisma
+      - ./backend/node_modules:/app/node_modules
+    depends_on:
+      - postgres
+    networks:
+      - app-network
+
+# Volumes et réseaux
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge
