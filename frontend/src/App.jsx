@@ -1,5 +1,3 @@
-import './App.css'
-
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
@@ -8,14 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 // Base URL de ton backend
-const API_URL = "http://localhost:3000";
+const API_URL = "http://localhost:3001/api";
 
 export default function App() {
   const [page, setPage] = useState("login"); // login | register | home
   const [token, setToken] = useState(null);
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background text-foreground flex items-center justify-center p-4">
       {page === "login" && (
         <Login setPage={setPage} setToken={setToken} />
       )}
@@ -34,14 +32,14 @@ export default function App() {
 /* ---------------- LOGIN ---------------- */
 
 function Login({ setPage, setToken }) {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
   const handleLogin = async () => {
     try {
       const res = await axios.post(`${API_URL}/login`, {
-        email,
+        username,
         password,
       });
 
@@ -53,16 +51,16 @@ function Login({ setPage, setToken }) {
   };
 
   return (
-    <Card className="w-full max-w-md bg-gray-900 shadow-xl rounded-2xl">
+    <Card className="w-full max-w-md shadow-xl rounded-2xl">
       <CardContent className="p-6 space-y-4">
         <h1 className="text-2xl font-bold text-center">
           Writing on the Wall
         </h1>
 
         <Input
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Nom d'utilisateur"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
         />
 
         <Input
@@ -72,13 +70,13 @@ function Login({ setPage, setToken }) {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        {error && <p className="text-red-400 text-sm">{error}</p>}
+        {error && <p className="text-destructive text-sm">{error}</p>}
 
         <Button className="w-full" onClick={handleLogin}>
           Se connecter
         </Button>
 
-        <p className="text-sm text-center text-gray-400">
+        <p className="text-sm text-center text-muted-foreground">
           Pas encore de compte ?{" "}
           <span
             onClick={() => setPage("register")}
@@ -95,14 +93,14 @@ function Login({ setPage, setToken }) {
 /* ---------------- REGISTER ---------------- */
 
 function Register({ setPage }) {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
 
   const handleRegister = async () => {
     try {
       await axios.post(`${API_URL}/register`, {
-        email,
+        username,
         password,
       });
 
@@ -114,14 +112,14 @@ function Register({ setPage }) {
   };
 
   return (
-    <Card className="w-full max-w-md bg-gray-900 shadow-xl rounded-2xl">
+    <Card className="w-full max-w-md shadow-xl rounded-2xl">
       <CardContent className="p-6 space-y-4">
         <h1 className="text-2xl font-bold text-center">Inscription</h1>
 
         <Input
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Nom d'utilisateur"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
         />
 
         <Input
@@ -132,7 +130,7 @@ function Register({ setPage }) {
         />
 
         {message && (
-          <p className="text-sm text-center text-gray-300">{message}</p>
+          <p className="text-sm text-center text-muted-foreground">{message}</p>
         )}
 
         <Button className="w-full" onClick={handleRegister}>
@@ -199,7 +197,7 @@ function Home({ token, setPage }) {
   return (
     <div className="w-full max-w-3xl space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">📝 Writing on the Wall</h1>
+        <h1 className="text-3xl font-bold">Writing on the Wall</h1>
 
         <Button
           variant="destructive"
@@ -212,7 +210,7 @@ function Home({ token, setPage }) {
       </div>
 
       {/* Nouveau post */}
-      <Card className="bg-gray-900 rounded-2xl">
+      <Card className="bg-background rounded-2xl">
         <CardContent className="p-4 space-y-3">
           <Input
             placeholder="Écris quelque chose..."
@@ -233,10 +231,10 @@ function Home({ token, setPage }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <Card className="bg-gray-900 rounded-2xl shadow-md">
+            <Card className="bg-background rounded-2xl shadow-md">
               <CardContent className="p-4">
-                <p className="text-gray-200">{post.content}</p>
-                <p className="text-xs text-gray-500 mt-2">
+                <p className="text-primary">{post.content}</p>
+                <p className="text-xs text-ring mt-2">
                   {new Date(post.createdAt).toLocaleString()}
                 </p>
               </CardContent>
