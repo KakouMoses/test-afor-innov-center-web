@@ -8,14 +8,14 @@ services:
     container_name: my-postgres-container
     environment:
       POSTGRES_DB: afordb
-      POSTGRES_USER: postgres
+    #  POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U admin -d afordb"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d afordb"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -29,13 +29,13 @@ services:
       dockerfile: Dockerfile
     container_name: aforapp-backend
     ports:
-      - "3000:3000"
+      - "3001:3001"
     environment:
       NODE_ENV: production
       DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/afordb?schema=public"
       JWT_SECRET: "votre_clé_secrète_très_sécurisée_changez_cela_en_production"
       # Pour développement, ajoutez aussi:
-      # - PORT=3000
+      # - PORT=3001
       # - JWT_EXPIRES_IN=7d
     depends_on:
       postgres:
@@ -60,7 +60,7 @@ services:
       - "5173:80" # Production (nginx)
       # - "5173:5173" # Développement (Vite)
     environment:
-      VITE_API_URL: "http://localhost:3000"
+      VITE_API_URL: "http://localhost:3001/api"
       # Variables spécifiques à votre app:
       # - VITE_APP_NAME=Writing on the Wall
     depends_on:

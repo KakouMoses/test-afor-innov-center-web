@@ -1,5 +1,5 @@
 // src/config/prisma.js
-import { PrismaClient } from '../generated/prisma/client.ts'; // Notez le nouveau chemin
+import { PrismaClient } from '../generated/prisma/client.js'; // Notez le nouveau chemin
 import { PrismaPg } from '@prisma/adapter-pg';
 import pg from 'pg';
 

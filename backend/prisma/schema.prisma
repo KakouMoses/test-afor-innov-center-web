@@ -1,6 +1,6 @@
 generator client {
   // 'prisma-client' au lieu de 'prisma-client-js'
-  provider = "prisma-client"
+  provider = "prisma-client-js"
   // Chemin de sortie OBLIGATOIRE
   output   = "../src/generated/prisma"
 }
