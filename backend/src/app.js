@@ -27,7 +27,7 @@ app.post('/api/test', function(req, res){
   res.json({ received: req.body });
 });
 
-const PORT = process.env.PORT || 3002;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, function(){
   console.log(`Backend running on port ${PORT}`);
 });

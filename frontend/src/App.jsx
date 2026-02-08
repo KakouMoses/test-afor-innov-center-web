@@ -38,7 +38,7 @@ function Login({ setPage, setToken }) {
 
   const handleLogin = async () => {
     try {
-      const res = await axios.post(`${API_URL}/login`, {
+      const res = await axios.post(`${API_URL}/auth/login`, {
         username,
         password,
       });
@@ -99,7 +99,7 @@ function Register({ setPage }) {
 
   const handleRegister = async () => {
     try {
-      await axios.post(`${API_URL}/register`, {
+      await axios.post(`${API_URL}/auth/register`, {
         username,
         password,
       });

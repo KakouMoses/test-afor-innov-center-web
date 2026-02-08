@@ -1,0 +1,27 @@
+generator client {
+  // 'prisma-client' au lieu de 'prisma-client-js'
+  provider = "prisma-client-js"
+  // Chemin de sortie OBLIGATOIRE
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  // L'URL est gérée dans prisma.config.ts, on la retire ici
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  posts     Post[]
+  createdAt DateTime @default(now())
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  content   String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  createdAt DateTime @default(now())
+}
