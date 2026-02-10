@@ -45,8 +45,17 @@ Le but principal de ce projet est de démontrer ma capacité à réaliser une pl
 
 2. Configurez les variables d'environnement :
    - Dans le dossier `backend`, créez un fichier `.env` avec les variables nécessaires (ex. : `DATABASE_URL`, `JWT_SECRET`).
+  
+3. Importez les différentes dépendances du frontend et du backend :
+   ```
+   cd frontend
+   npm install
+   cd backend
+   npm install
+   ```
+4. 
 
-3. Construisez et lancez les conteneurs avec Docker Compose :
+5. Construisez et lancez les conteneurs avec Docker Compose :
    ```
    docker-compose up --build
    ```
@@ -56,7 +65,7 @@ Le but principal de ce projet est de démontrer ma capacité à réaliser une pl
      - Frontend sur le port 5173 (ou 80 en production).
      - Prisma Studio (optionnel) sur le port 5555.
 
-4. Appliquez les migrations Prisma (depuis le conteneur backend ou localement) :
+6. Appliquez les migrations Prisma (depuis le conteneur backend ou localement) :
    ```
    docker exec -it aforapp-backend npx prisma migrate deploy
    ```
